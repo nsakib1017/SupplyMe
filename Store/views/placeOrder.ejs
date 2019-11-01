@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Create Order</title>
+  </head>
+  <body> 
+    <form class = "form form-group" id="form" method="POST" onsubmit="return false;" action="/api/placeOrder/<%=suppid%>">
+       <!-- <input type = "text" name = "snickers" placeholder="Snicker">
+        <input type = "text" name="kitkat" placeholder="KitKat">
+        <input type = "text" name="cadbury" placeholder="Cadbury">
+        <input type= "submit" value = "order">
+      -->
+      
+      <input type="text" id="member" name="member" value=""> Number of members: (max. 10)<br/>
+      <a class= "btn btn-primary" href="#" id="filldetails" onclick="addFields()">Fill Details</a>
+      <br> <br>
+      <div class="form form-group" id="container"/>
+    </form>
+   
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type='text/javascript'>
+      function addFields(){
+          // Number of inputs to create
+          var number = document.getElementById("member").value;
+          // Container <div> where dynamic content will be placed
+          var container = document.getElementById("container");
+          // Clear previous contents of the container
+          while (container.hasChildNodes()) {
+              container.removeChild(container.lastChild);
+          }
+          for (i=0;i<number;i++){
+              // Append a node with a random text
+              container.appendChild(document.createTextNode("Item " + (i+1) + " "));
+              // Create an <input> element, set its type and name attributes
+              var input = document.createElement("input");
+              input.type = "text";
+              input.name = "item" + i;
+              container.appendChild(input);
+              // Append a line break 
+              container.appendChild(document.createElement("br"));
+          }
+          container.appendChild(document.createElement("br"));
+          var hidden = document.createElement("input");
+          var input = document.createElement("input");
+          var form = document.getElementById("form");
+          form.onsubmit="return true";
+          input.type="submit";
+          input.value = "Order"
+          input.className="btn btn-danger"
+          container.appendChild(input);
+          container.appendChild(document.createElement("br"));
+      }
+  </script>
+  </body>
+</html>

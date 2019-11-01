@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Order</title>
+</head>
+
+<body>
+    <div class="container-fluid col-sm-8" style="margin-top: 3%; margin-bottom: 3%;">
+
+        <% order.forEach(function(x) { %>
+        <% 
+            arr = Object.keys(x)
+            arr1 = Object.values(x);
+        %>
+        <div class="card col-sm-12" style="height: auto;">
+            <div class="card-header col-sm-12">
+                <h3><B>Order ID:</B> <%= x.orderID %></h3>
+            </div>
+            <div class="card-body row">
+                <div class="col-sm-6">
+                    <h5><B>Items Ordered</B></h5>
+                    <%for( i=0; i< arr.length-1 ;i++ ) {%>
+                    <% if(arr[i] != "status" && arr[i] != "items" && arr[i] != "supplierID" && arr[i] != "storeID" && arr[i] != "orderID" && arr[i] != "_id"  ) { %>
+                    <%= arr[i] %> : <%= arr1[i] %>
+                    <br>
+                    <%}%>
+                    <%}%>
+                </div>
+                <div class="col-sm-6">
+                    <h5> <B>Orderer Information</B> </h5>
+                    Name: <%=orderer[0].username%><br>
+                    Email: <%=orderer[0].email%><br>
+                    Contact: <%=orderer[0].number%><br>
+                    Address: <%=orderer[0].address%><br>
+                </div>
+            </div>
+            <div class="card-footer col-sm-12">
+                <%if(x.status == 'pending' ) {%>
+                <form id="del" method="post" action="/orders/update/<%= x.orderID %>" style="margin: 5px;">
+                    <input type="hidden" value="<%=x.orderID%>" name="id">
+                    <input type="submit" value="Supply" class="btn btn-primary col-sm-12">
+                </form>
+                <%}%>
+    
+                <form method="post" action="/orders/delete/<%= x.orderID %>">
+                <button type="submit" class="btn btn-danger col-sm-12">Cancel Order</button>
+                </form>
+            </div>
+        </div>
+        <%})%>
+    </div>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
