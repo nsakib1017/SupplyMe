@@ -61,6 +61,7 @@ router.get('/logout', function (req, res, next) {
     req.session.userId = null;
     return res.redirect('/');
   }
+  else return res.redirect('/');
 });
 
 module.exports = router;

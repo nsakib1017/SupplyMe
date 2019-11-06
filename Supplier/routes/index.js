@@ -60,7 +60,8 @@ router.get('/logout', function (req, res, next) {
     // delete session object
     req.session.userID = null;
     return res.redirect('/');
-  }
+  }  
+  else return res.redirect('/');
 });
 
 module.exports = router;

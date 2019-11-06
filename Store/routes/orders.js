@@ -101,4 +101,28 @@ router.post('/view/:id/:id1', function (req, res) {
     });
   });
 });
+router.post('/delete/:id',auth,function(req,res){
+  const removeDocument = function(db, callback) {
+      // Get the documents collection
+      const collection = db.collection(colName);
+      // Delete document where a is 3
+      collection.deleteOne({ orderID :  req.params.id }, function(err, result) {
+        assert.equal(err, null);
+        assert.equal(1, result.result.n);
+        console.log("Removed the document.");
+        callback(result);
+      });
+    }
+    MongoClient.connect(url, function (err, client) {
+      assert.equal(null, err);
+      console.log("Connected successfully to server");
+
+      const db = client.db(dbName);
+
+      removeDocument(db, function() {
+          client.close();
+        });
+  });
+  res.redirect('/order');
+});
 module.exports = router;

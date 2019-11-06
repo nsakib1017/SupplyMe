@@ -54,4 +54,29 @@ router.post('/store/recieve', function (req, res) {
   res.send(txID);
 });
 
+router.post('/store/remove/order/:id', function (req, res) {
+  const removeDocument = function (db, callback) {
+    // Get the documents collection
+    const collection = db.collection(colName);
+    // Delete document where a is 3
+    collection.deleteOne({ orderID: req.params.id }, function (err, result) {
+      assert.equal(err, null);
+      assert.equal(1, result.result.n);
+      console.log("Removed the document.");
+      callback(result);
+    });
+  }
+  MongoClient.connect(url, function (err, client) {
+    assert.equal(null, err);
+    console.log("Connected successfully to server");
+
+    const db = client.db(dbName);
+
+    removeDocument(db, function () {
+      client.close();
+    });
+  });
+  return res.send({orderID: req.params.id, operation: "cancellation", status: "done"});
+});
+
 module.exports = router;

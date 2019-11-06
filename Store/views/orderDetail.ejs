@@ -15,13 +15,7 @@
 
 <body>
     <div class="container-fluid col-sm-8" style="margin-top: 3%; margin-bottom: 3%;">
-
-        <% var s = 0; %>
         <% order.forEach(function(x) { %>
-
-        <% s++; %>
-        <% var id =  "myP" + s; %>
-        <% var id1 =  "mybtn" + s; %>
         <% 
             arr = Object.keys(x)
             arr1 = Object.values(x);
@@ -49,9 +43,16 @@
                 </div>
             </div>
             <div class="card-footer col-sm-12">
-                <form method="post" action="order/delete/<%= x.orderID %>">
-                    <button type="submit" class="btn btn-success col-sm-12">Cancel Order</button>
+                <% if(x.status=="supplied") {%>
+                <form method="post" action="/order/delete/<%= x.orderID %>">
+                    <button type="submit" class="btn btn-danger col-sm-12">Remove Order</button>
                 </form>
+                <%}%>
+                <% if(x.status == "pending") {%>
+                    <form method="post" action="/api/delete/order/<%= x.orderID %>">
+                        <button type="submit" class="btn btn-danger col-sm-12">Cancel Order</button>
+                    </form>
+                <%}%>
             </div>
         </div>
         <%})%>
