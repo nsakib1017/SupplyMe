@@ -31,9 +31,10 @@
                 <td><%=x.address%></td>
                 <td><%=x.number%></td>
                 <td><%=x.email%></td>
-                <td class="form"> 
+                <td class="form">
                     <form id="del" method="post" action="order/create">
                         <input type="hidden" value="<%=x._id%>" name="id">
+                        <input type="hidden" value="<%=x.username%>" name="name">
                         <input type="submit" value="Order" class="btn btn-danger">
                     </form>
                 </td>
@@ -41,9 +42,43 @@
             <%})%>
         </tbody>
     </table>
-<div class="btn btn-red">
-        <a class="btn btn-primary" href="http://localhost:3001/supplier/addSupplier">Add Supplier</a>
-</div>
+    <div class="card-header">
+        <h5>Previous Order Summary</h5>
+    </div>
+    <% var max=-999;
+        var company=""; 
+    %>
+    <%summ.forEach(function (x) { %>
+    <%
+            if(x.total > max){
+                max = x.total;
+                company = x._id;
+            }
+        %>
+    <div class="card-body">
+
+        <B>Company Name: </B>
+        <p> <%=x._id%> </p>
+        <B>Times Ordered: </B>
+        <p> <%=x.total%> </p>
+    </div>
+    <%}) %>
+    <div class="card-footer">
+
+    </div>
+    <div class="card-header">
+        <h5>Favourite Supplier</h5>
+    </div>
+    <div class="card-body">
+        <B>Name: </B>
+        <p><%=company%></p>
+        <B>Times ordered: </B>
+        <p><%=max%></p>
+    </div>
+    <div class="card-footer">
+
+    </div>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
