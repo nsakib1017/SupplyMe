@@ -39,7 +39,7 @@ router.get('/', auth, function (req, res, next) {
 });
 
 router.post('/create', auth, function (req, res, next) {
-  res.render('placeOrder', { suppid: req.body.id });
+  res.render('placeOrder', { suppid: req.body.id, suppname: req.body.name });
 });
 
 router.post('/update/:id', function (req, res) {

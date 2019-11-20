@@ -22,7 +22,7 @@ router.post('/placeOrder/:id', function (req, res) {
   console.log(Object.values(obj));
   // iterate the json object to split the order information and create the final json string
   var y = "{\"items\": " + "\"" + req.body.member + "\"" + ",";
-  for (var i = 1; i < Object.values(obj).length; i++) {
+  for (var i = 2; i < Object.values(obj).length; i++) {
     x = Object.values(obj)[i];
     // split at whitespace, comma or colon
     var arr = x.split(/[\s,:]+/);
@@ -35,7 +35,9 @@ router.post('/placeOrder/:id', function (req, res) {
   //parse the json string to make it json object
   var json_parsed = JSON.parse(y);
   json_parsed.supplierID = req.params.id;
+  json_parsed.suppliername = req.body.suppname;
   json_parsed.storeID = req.session.userId;
+  json_parsed.storename = req.session.store;
   console.log(json_parsed);
   axios.post('http://localhost:3000/api/store/recieve', json_parsed)
     .then(function (response) {
