@@ -29,7 +29,7 @@
                 <div class="col-sm-6">
                     <h5><B>Items Ordered</B></h5>
                     <%for( i=0; i< arr.length-1 ;i++ ) {%>
-                    <% if(arr[i] != "status" && arr[i] != "items" && arr[i] != "supplierID" && arr[i] != "storeID" && arr[i] != "orderID" && arr[i] != "_id"  ) { %>
+                    <% if(arr[i] != "status" && arr[i] != "items" && arr[i] != "supplierID" && arr[i] != "storeID" && arr[i] != "orderID" && arr[i] != "_id" && arr[i] != "suppliername" && arr[i] != "storename" ) { %>
                     <%= arr[i] %> : <%= arr1[i] %>
                     <br>
                     <%}%>

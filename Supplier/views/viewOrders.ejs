@@ -33,6 +33,43 @@
             </div>
         </div>
         <%})%>
+        <% 
+        var max=-999;
+        var company=""; 
+        %>
+        <div class="card-header">
+            <h5>Previous Order Summary</h5>
+        </div>
+        <%summ.forEach(function (x) { %>
+        <%
+            if(x.total > max){
+                max = x.total;
+                company = x._id;
+            }
+        %>
+        <div class="card-body">
+
+            <B>Company Name: </B>
+            <p> <%=x._id%> </p>
+            <B>Times Ordered: </B>
+            <p> <%=x.total%> </p>
+        </div>
+        <%}) %>
+        <div class="card-footer">
+
+        </div>
+        <div class="card-header">
+            <h5>Favourite Supplier</h5>
+        </div>
+        <div class="card-body">
+            <B>Name: </B>
+            <p><%=company%></p>
+            <B>Times ordered: </B>
+            <p><%=max%></p>
+        </div>
+        <div class="card-footer">
+
+        </div>
     </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
