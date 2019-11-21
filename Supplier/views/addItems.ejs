@@ -3,7 +3,7 @@
 
 <head>
     <!-- Theme Made By www.w3schools.com -->
-    <title>Supplier - Update</title>
+    <title>Supplier - Inventory Add</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
@@ -256,44 +256,27 @@
     </nav>
 
     <div class="jumbotron text-center">
-        <h1>Update data</h1>
+        <h1>Create Inventory</h1>
     </div>
 
     <!-- Container (About Section) -->
     <div class= "container-fluid">
-        <form class = "form well well-lg col-sm-8" style="margin-left: 16%" id="form" method="post" action="/up_info/<%= info._id%>/<%= info.username%>">
-            <div class="form-group">
-                    <label for="name">Business Name</label>
-                    <input type="text" class="form-control" name="name" id="uname" aria-describedby="unameHelp"
-                        value="<%= info.username %>">
-                    <small id="emailHelp" class="form-text text-muted">Has to be Unique.</small>
-                </div>
-                <div class="form-group">
-                    <label for="email">Business Email</label>
-                    <input type="email" class="form-control" name="email" id="email" value="<%= info.email %>">
-                </div>
-                <div class="form-group">
-                    <label for="number"> Business Number </label>
-                    <input type="number" class="form-control" name="number" id="number" value="<%= info.number %>">
-                </div>
-                <div class="form-group">
-                    <label for="address"> Business Address </label>
-                    <input type="text" class="form-control" name="address" id="address" value="<%= info.address %>">
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" name="password" id="password" placeholder="New Password">
-                </div>
-                <button type="submit" class="btn btn-lg btn-primary btn-block">Update</button>
-        </form> 
-    
-    </div>
 
-        <footer class="container-fluid text-center">
-            <a href="#myPage" title="To Top">
-                <span class="glyphicon glyphicon-chevron-up"></span>
-            </a>
-        </footer>
+        <form class = "form well well-lg col-sm-8" style="margin-left: 16%" id="form" method="post" action="create/item">
+            <input type="hidden" value="<%=suppid%>" name="suppid">
+                <div class="form-group">
+                    <label for="name">Item Name</label>
+                    <input type="text" class="form-control" name="name" id="uname" aria-describedby="unameHelp">
+                   
+                </div>
+                <div class="form-group">
+                    <label for="email">Price / Kg</label>
+                    <input type="text" class="form-control" name="price" id="email">
+                </div>
+               
+            <button type="submit" class="btn btn-lg btn-primary btn-block">Add Item</button>
+        </form> 
+    </div>
 
         <script>
             $(document).ready(function () {
