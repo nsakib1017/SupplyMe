@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <!-- Theme Made By www.w3schools.com -->
-    <title>Store - Update</title>
+    <title>Store - Supplier Details</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
@@ -255,83 +256,80 @@
     </nav>
 
     <div class="jumbotron text-center">
-        <h1>Update data</h1>
+        <h1>Supplier Details</h1>
     </div>
 
-    <!-- Container (About Section) -->
-    <div class= "container-fluid">
-        <form class = "form well well-lg col-sm-8" style="margin-left: 16%" id="form" method="post" action="/up_info/<%= info._id%>/<%= info.username%>">
-            <div class="form-group">
-                    <label for="name">Business Name</label>
-                    <input type="text" class="form-control" name="name" id="uname" aria-describedby="unameHelp"
-                        value="<%= info.username %>">
-                    <small id="emailHelp" class="form-text text-muted">Has to be Unique.</small>
-                </div>
-                <div class="form-group">
-                    <label for="email">Business Email</label>
-                    <input type="email" class="form-control" name="email" id="email" value="<%= info.email %>">
-                </div>
-                <div class="form-group">
-                    <label for="number"> Business Number </label>
-                    <input type="number" class="form-control" name="number" id="number" value="<%= info.number %>">
-                </div>
-                <div class="form-group">
-                    <label for="address"> Business Address </label>
-                    <input type="text" class="form-control" name="address" id="address" value="<%= info.address %>">
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" name="password" id="password" placeholder="New Password">
-                </div>
-                <button type="submit" class="btn btn-lg btn-primary btn-block">Update</button>
-        </form> 
-    
-    </div>
+    <div class="container-fluid col-sm-8 " style="margin-left: 16%;">
+        <div class="row">
+            <div class="well well-lg col-sm-12">
+                <%info.forEach(function (x) { %>
 
-        <footer class="container-fluid text-center">
-            <a href="#myPage" title="To Top">
-                <span class="glyphicon glyphicon-chevron-up"></span>
-            </a>
-        </footer>
+                <B>Name: </B> <%=x.username%> <br>
+                <B>Contact: </B> <%=x.number%> <br>
+                <B>Address: </B> <%=x.address%> <br>
+                <B>E-mail: </B> <%=x.email%> <br>
+            </div>
+            <%}) %>
+        </div>
+        <div class="row">
+            <div class="well well-lg col-sm-12">
+                <h3><B>Items Sold</B></h3>
+                <%items.forEach(function (x) { %>
+                <B>Item Name:</B> <%=x.itemname%> <br>
+                 
+                <B>Price per KG:</B> <%=x.price%> <br>
+                <%}) %>
+            </div>
+            </div>
+            <div style="margin-bottom: 1cm;">
+            <% info.forEach(function(x) { %>
 
-        <script>
-            $(document).ready(function () {
-                // Add smooth scrolling to all links in navbar + footer link
-                $(".navbar a, footer a[href='#myPage']").on('click', function (event) {
-                    // Make sure this.hash has a value before overriding default behavior
-                    if (this.hash !== "") {
-                        // Prevent default anchor click behavior
-                        event.preventDefault();
+            <form id="del" method="post" action="/order/create">
+                <input type="hidden" value="<%=x._id%>" name="id">
+                <input type="hidden" value="<%=x.username%>" name="name">
+                <input type="submit" value="Order" class="btn btn-block btn-danger">
+            </form>
+            <%})%>
+        </div>
+        </div>
 
-                        // Store hash
-                        var hash = this.hash;
+    <script>
+        $(document).ready(function () {
+            // Add smooth scrolling to all links in navbar + footer link
+            $(".navbar a, footer a[href='#myPage']").on('click', function (event) {
+                // Make sure this.hash has a value before overriding default behavior
+                if (this.hash !== "") {
+                    // Prevent default anchor click behavior
+                    event.preventDefault();
 
-                        // Using jQuery's animate() method to add smooth page scroll
-                        // The optional number (900) specifies the number of milliseconds it takes to scroll to the specified area
-                        $('html, body').animate({
-                            scrollTop: $(hash).offset().top
-                        }, 900, function () {
+                    // Store hash
+                    var hash = this.hash;
 
-                            // Add hash (#) to URL when done scrolling (default click behavior)
-                            window.location.hash = hash;
-                        });
-                    } // End if
-                });
+                    // Using jQuery's animate() method to add smooth page scroll
+                    // The optional number (900) specifies the number of milliseconds it takes to scroll to the specified area
+                    $('html, body').animate({
+                        scrollTop: $(hash).offset().top
+                    }, 900, function () {
 
-                $(window).scroll(function () {
-                    $(".slideanim").each(function () {
-                        var pos = $(this).offset().top;
-
-                        var winTop = $(window).scrollTop();
-                        if (pos < winTop + 600) {
-                            $(this).addClass("slide");
-                        }
+                        // Add hash (#) to URL when done scrolling (default click behavior)
+                        window.location.hash = hash;
                     });
+                } // End if
+            });
+
+            $(window).scroll(function () {
+                $(".slideanim").each(function () {
+                    var pos = $(this).offset().top;
+
+                    var winTop = $(window).scrollTop();
+                    if (pos < winTop + 600) {
+                        $(this).addClass("slide");
+                    }
                 });
-            })
-        </script>
+            });
+        });
+    </script>
 
 </body>
 
 </html>
-
