@@ -16,10 +16,6 @@ function makeid(length) {
   }
   return result;
 }
-/* GET home page. */
-router.get('/', function (req, res, next) {
-  res.send('API Page Goes Here');
-});
 
 router.post('/store/recieve', function (req, res) {
   console.log(req.body);

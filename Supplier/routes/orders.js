@@ -22,23 +22,8 @@ router.get('/', auth, function (req, res) {
       assert.equal(err, null);
       console.log("Found the following records");
       console.log(docs);
-      global.data0 = docs;
       callback(docs);
-    });
-    collection.aggregate([
-
-      { $match: { supplierID: req.session.userID } }
-      , {
-        $group:
-          { _id: '$storename', total: { $sum: 1 } }
-      }
-    ]).toArray(function (err, docs) {
-      assert.equal(null, err);
-      console.log("Found the following records");
-      console.log(docs);
-      global.data1 = docs;
-      callback(docs);
-      res.render('viewOrders', { info: global.data0, summ: global.data1 });
+      res.render('viewOrders', { info: docs});
     });
   }
   MongoClient.connect(url, function (err, client) {
@@ -144,5 +129,31 @@ router.post('/delete/:id', auth, function (req, res) {
     });
   });
   res.redirect('/orders');
+});
+router.post('/search/storename', function (req, res) {
+  var findDocuments = function findDocuments (db, callback) {
+    // Get the documents collection
+    const collection = db.collection(colName);
+    // Find some documents
+    collection.find({"storename": req.body.suppName}).toArray(function (err, docs) {
+      assert.equal(err, null);
+      console.log("Found the following records");
+      console.log(docs);
+      callback(docs);
+      res.render("viewOrders", {info:docs});
+    });
+
+     
+  }
+  MongoClient.connect(url, function (err, client) {
+    assert.equal(null, err);
+    console.log("Connected correctly to server");
+
+    const db = client.db(dbName);
+
+    findDocuments(db, function () {
+      client.close();
+    });
+  });
 });
 module.exports = router;

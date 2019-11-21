@@ -1,161 +1,75 @@
 var express = require('express');
-var router = express.Router();
-const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
+var items = require('../schemas/items');
 var auth = require('../middleware/auth');
+var router = express.Router();
 
-const url = 'mongodb://localhost:27017';
-const dbName = 'ads_pr';
-const colName ='supplier_inventory';
-/* GET home page. */
-router.get('/', auth ,function (req, res) {
-  const findDocuments = function (db, callback) {
-      // Get the documents collection
-      const collection = db.collection(colName);
-      // Find some documents
-      collection.find({}).toArray(function (err, docs) {
-          assert.equal(err, null);
-          console.log("Found the following records");
-          console.log(docs)
-          callback(docs);
-          res.render('viewInventory',{info: docs});
-      });
-  }
-  MongoClient.connect(url, function (err, client) {
-      assert.equal(null, err);
-      console.log("Connected correctly to server");
-
-      const db = client.db(dbName);
-
-          findDocuments(db, function () {
-              client.close();
-          });
+router.get('/', function(req,res){
+  items.find({ suppid: req.session.userID })
+  .exec(function (err, items) {
+      if (err) {
+          return callback(err)
+      } else if (!items) {
+          var err = new Error('User not found.');
+          err.status = 401;
+          return callback(err);
+      }
+      return res.render('viewInventory',{items: items});
   });
-
 });
-
-//add customers
-router.get('/addInventory', auth ,function(req,res){
-  res.render('createInventory');
-});
-
-//create customers
-router.post('/create', auth, function(req, res, next) {
-  const insertDocuments = function (db, callback) {
-    function makeid(length) {
-        var result           = '';
-        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        var charactersLength = characters.length;
-        for ( var i = 0; i < length; i++ ) {
-           result += characters.charAt(Math.floor(Math.random() * charactersLength));
-        }
-        return result;
-     }
-    // Get the documents collection
-    const collection = db.collection(colName);
-    // Insert some documents
-    collection.insertMany([
-        { name: req.body.name, amount: req.body.amount, unit_pr: req.body.unit_pr, mID: makeid(50) }
-    ], function (err, result) {
-        assert.equal(err, null);
-        assert.equal(1, result.result.n);
-        assert.equal(1, result.ops.length);
-        console.log("Inserted 1 documents into the collection");
-        callback(result);
-    });
-}
-MongoClient.connect(url, function (err, client) {
-    assert.equal(null, err);
-    console.log("Connected successfully to server");
-
-    const db = client.db(dbName);
-
-    insertDocuments(db, function () {
-        client.close();
-    });
-});
-res.redirect('/inventory');
-});
-
-//update document
-router.post('/update/:id',auth,function(req,res){
-  const updateDocument = function(db, callback) {
-      // Get the documents collection
-      const collection = db.collection(colName);
-      // Update document where a is 2, set b equal to 1
-      collection.updateOne({ mID : req.params.id }
-        , { $set: { name: req.body.name, unit_pr: req.body.unit_pr } }, function(err, result) {
-        assert.equal(err, null);
-        assert.equal(1, result.result.n);
-        console.log("Updated the document with the field a equal to 2");
-        callback(result);
-      });
+router.get('/addInventory', function(req,res){
+  res.render('addItems',{ suppid: req.session.userID});
+})
+router.post('/create/item', auth, function (req, res, next) {
+  if (
+    req.body.name &&
+    req.body.price &&
+    req.body.suppid) {
+    var name =req.body.name;
+    var nm=name.toLowerCase();
+    console.log(nm);
+    var itemData = {
+      itemname: nm,
+      price: req.body.price,
+      suppid: req.body.suppid
     }
-    MongoClient.connect(url, function (err, client) {
-      assert.equal(null, err);
-      console.log("Connected successfully to server");
-
-      const db = client.db(dbName);
-
-      updateDocument(db, function () {
-          client.close();
-      });
-  });
-  res.redirect('/inventory');
-});
-
-//edit page
-router.post('/edit/:id',auth,function(req,res){
-  const findDocuments = function (db, callback) {
-      // Get the documents collection
-      const collection = db.collection(colName);
-      // Find some documents
-      collection.find({mID : req.params.id}).toArray(function (err, docs) {
-          assert.equal(err, null);
-          console.log("Found the following records");
-          global.x=docs
-          console.log(docs)
-          callback(docs);
-          res.render('updateInventory',{info: docs});
-      });
+    //use schema.create to insert data into the db
+    items.create(itemData, function (err, item) {
+      if (err) {
+        return next(err)
+      } else {
+        return res.redirect('/inventory/addInventory');
+      }
+    });
   }
-  MongoClient.connect(url, function (err, client) {
-      assert.equal(null, err);
-      console.log("Connected correctly to server");
-
-      const db = client.db(dbName);
-
-          findDocuments(db, function () {
-              client.close();
-          });
-  });
-
 });
-
-//delete document
-router.post('/delete/:id',auth,function(req,res){
-  const removeDocument = function(db, callback) {
-      // Get the documents collection
-      const collection = db.collection(colName);
-      // Delete document where a is 3
-      collection.deleteOne({ mID :  req.params.id }, function(err, result) {
-        assert.equal(err, null);
-        assert.equal(1, result.result.n);
-        console.log("Removed the document.");
-        callback(result);
-      });
-    }
-    MongoClient.connect(url, function (err, client) {
-      assert.equal(null, err);
-      console.log("Connected successfully to server");
-
-      const db = client.db(dbName);
-
-      removeDocument(db, function() {
-          client.close();
-        });
+router.post('/delete/:id',function(req,res){
+  items.deleteOne({ _id: req.body.id }, function (err) {
+    if (err) return handleError(err);
+    return res.redirect('/inventory');
   });
-  res.redirect('/inventory');
+});
+router.post('/edit/:id',function(req,res){
+  items.find({ _id: req.params.id })
+  .exec(function (err, items) {
+      if (err) {
+          return callback(err)
+      } else if (!items) {
+          var err = new Error('User not found.');
+          err.status = 401;
+          return callback(err);
+      }
+      return res.render('updateInventory',{items: items});
+  });
+});
+router.post('/update/:id', async function(req, res){
+  var update = {
+    "itemname": req.body.itemname, "price": req.body.price, "suppid": req.body.suppid
+  }
+  const filter = { _id: req.params.id };
+  let doc = await items.findOneAndUpdate(filter, update, {
+    new: true
+  });
+  return res.redirect('/inventory');
 });
 
 module.exports = router;
