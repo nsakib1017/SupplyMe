@@ -9,40 +9,36 @@ const url = 'mongodb://localhost:27017';
 const dbName = 'ads_pr';
 const colName = 'store_order_list';
 
-/* GET home page. */
-router.get('/', function (req, res, next) {
-  res.send('API Page Goes Here');
-});
-
 router.post('/placeOrder/:id', function (req, res) {
   // stringyfy req.body in order to parse it as a json
   var x = JSON.stringify(req.body);
   // parse the string as json 
   const obj = JSON.parse(x);
   console.log(Object.values(obj));
-  // iterate the json object to split the order information and create the final json string
-  var y = "{\"items\": " + "\"" + req.body.member + "\"" + ",";
-  for (var i = 2; i < Object.values(obj).length; i++) {
-    x = Object.values(obj)[i];
-    // split at whitespace, comma or colon
-    var arr = x.split(/[\s,:]+/);
-    y += ("\"" + arr[0] + "\"" + ":" + "\"" + arr[1] + "\"");
-    if (i != Object.values(obj).length - 1)
-      y += ","
+  var order = { items: 0, charge: 0, status: "pending" };
+  
+  for (var i = 3; i < Object.values(obj).length; i += 3) {
+    if (Object.values(obj)[i] != 0) {
+      // alphabet letters found
+      order.items = order.items + 1;
+      var x = Object.values(obj)[i - 2];
+      console.log(x);
+      order[Object.values(obj)[i - 2]] = Object.values(obj)[i];
+      order.charge = Number(order.charge) + ((Object.values(obj)[i]) * (Object.values(obj)[i - 1]));
+
+    }
   }
-  // complete creating the json string
-  y += ",\"status\":\"pending\"}";
-  //parse the json string to make it json object
-  var json_parsed = JSON.parse(y);
-  json_parsed.supplierID = req.params.id;
-  json_parsed.suppliername = req.body.suppname;
-  json_parsed.storeID = req.session.userId;
-  json_parsed.storename = req.session.store;
-  console.log(json_parsed);
-  axios.post('http://localhost:3000/api/store/recieve', json_parsed)
+
+  order.supplierID = req.params.id;
+  order.suppliername = req.body.suppname;
+  order.storeID = req.session.userId;
+  order.storename = req.session.store;
+  console.log(order);
+
+  axios.post('http://localhost:3000/api/store/recieve', order)
     .then(function (response) {
       console.log(response.data);
-      var json_parsed1 = json_parsed;
+      var json_parsed1 = order;
       // add orderID field with response.data
       json_parsed1.orderID = response.data;
       const insertDocuments = function (db, callback) {
@@ -71,7 +67,7 @@ router.post('/placeOrder/:id', function (req, res) {
     .catch(function (error) {
       console.log(error);
     });
-  res.redirect('/home');
+  return res.redirect('/home');
 });
 
 router.post('/delete/order/:id', function (req, res) {

@@ -9,11 +9,12 @@ const url = 'mongodb://localhost:27017';
 const dbName = 'ads_pr';
 const colName = 'store_order_list';
 const colName1 = 'suppliers';
+const colName2 = 'items'
 
 
 /* GET home page. */
 
-router.get('/', auth, function (req, res, next) {
+router.get('/', auth, function (req, res) {
   const findDocuments = function (db, callback) {
     // Get the documents collection
     const collection = db.collection(colName);
@@ -39,7 +40,30 @@ router.get('/', auth, function (req, res, next) {
 });
 
 router.post('/create', auth, function (req, res, next) {
-  res.render('placeOrder', { suppid: req.body.id, suppname: req.body.name });
+  const findDocuments = function (db, callback) {
+    // Get the documents collection
+    const collection = db.collection(colName2);
+    // Find some documents
+    collection.find({ "suppid": req.body.id }).toArray(function (err, docs) {
+      assert.equal(err, null);
+      console.log("Found the following records");
+      console.log(docs);
+      callback(docs);
+      res.render('placeOrder', { items: docs, suppid: req.body.id, suppname: req.body.name });
+    });
+  }
+  MongoClient.connect(url, function (err, client) {
+    assert.equal(null, err);
+    console.log("Connected correctly to server");
+
+    const db = client.db(dbName);
+
+    findDocuments(db, function () {
+      client.close();
+    });
+  });
+
+  
 });
 
 router.post('/update/:id', function (req, res) {
@@ -124,5 +148,31 @@ router.post('/delete/:id',auth,function(req,res){
         });
   });
   res.redirect('/order');
+});
+router.post('/search/supplier', function (req, res) {
+  var findDocuments = function findDocuments (db, callback) {
+    // Get the documents collection
+    const collection = db.collection(colName);
+    // Find some documents
+    collection.find({"suppliername": req.body.suppName}).toArray(function (err, docs) {
+      assert.equal(err, null);
+      console.log("Found the following records");
+      console.log(docs);
+      callback(docs);
+      res.render("viewOrders", {info:docs});
+    });
+
+     
+  }
+  MongoClient.connect(url, function (err, client) {
+    assert.equal(null, err);
+    console.log("Connected correctly to server");
+
+    const db = client.db(dbName);
+
+    findDocuments(db, function () {
+      client.close();
+    });
+  });
 });
 module.exports = router;
