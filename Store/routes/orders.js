@@ -149,6 +149,76 @@ router.post('/delete/:id',auth,function(req,res){
   });
   res.redirect('/order');
 });
+
+router.post('/custom', function (req, res){
+      return res.render('orderItems', {suppId: req.body.id, suppName: req.body.name, item: req.body.items});
+});
+router.post('/custom/addItems', function(req, res){
+    if(Number(req.body.itemsCount) > Number(req.body.items)){
+      return res.redirect(307, '/order/custom');
+    }
+    else {
+
+      const findDocuments = function (db, callback) {
+        // Get the documents collection
+        const collection = db.collection(colName2);
+        // Find some documents
+        collection.find({ "suppid": req.body.id }).toArray(function (err, docs) {
+          assert.equal(err, null);
+          console.log("Found the following records");
+          console.log(docs);
+          callback(docs);
+          return res.render('createCustOrder', {suppId: req.body.id, suppName: req.body.name, itemsCount: req.body.itemsCount, items: docs});
+        });
+      }
+      MongoClient.connect(url, function (err, client) {
+        assert.equal(null, err);
+        console.log("Connected correctly to server");
+    
+        const db = client.db(dbName);
+    
+        findDocuments(db, function () {
+          client.close();
+        });
+      });
+
+      
+    }
+});
+router.post('/custom/postOrder', function(req, res){
+      var x = JSON.stringify(req.body);
+      const obj = JSON.parse(x);
+      const values = Object.values(obj);
+      console.log(values);
+      var itemOrdered=[];
+      var k=0;
+      for(var i=values.length - Number(req.body.itemsCount); i<values.length; i++){
+          itemOrdered[k]=values[i];
+          k++;
+      }
+      const findDocuments = function (db, callback) {
+        // Get the documents collection
+        const collection = db.collection(colName2);
+        // Find some documents
+        collection.find({$and:[{ "suppid": req.body.id }, {"itemname": {$in: itemOrdered}}]}).toArray(function (err, docs) {
+          assert.equal(err, null);
+          console.log("Found the following records");
+          console.log(docs);
+          callback(docs);
+          return res.render('placeOrder', { items: docs, suppid: req.body.id, suppname: req.body.name });
+        });
+      }
+      MongoClient.connect(url, function (err, client) {
+        assert.equal(null, err);
+        console.log("Connected correctly to server");
+    
+        const db = client.db(dbName);
+    
+        findDocuments(db, function () {
+          client.close();
+        });
+      });
+});
 router.post('/search/supplier', function (req, res) {
   var findDocuments = function findDocuments (db, callback) {
     // Get the documents collection
