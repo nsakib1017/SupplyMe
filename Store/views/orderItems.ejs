@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <!-- Theme Made By www.w3schools.com -->
-    <title>Store - Supplier Details</title>
+    <title>Store - Order</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
@@ -256,89 +255,66 @@
     </nav>
 
     <div class="jumbotron text-center">
-        <h1>Supplier Details</h1>
+        <h1>Custom Order</h1>
     </div>
 
-    <div class="container-fluid col-sm-8 " style="margin-left: 16%;">
-        <div class="row">
-            <div class="well well-lg col-sm-12">
-                <%info.forEach(function (x) { %>
+    <!-- Container (About Section) -->
+    <div class= "container-fluid">
+        <form class = "form well well-lg col-sm-8" style="margin-left: 16%" id="form" method="post" action="/order/custom/addItems">
+            <div class="form-group">
+                    <label for="name">How many Items do You want in the order? (<B>Max: <%= item %> </B>)</label>
+                    <input type="number" class="form-control" name="itemsCount" id="uname">
+                    <input type="hidden" value="<%=suppId%>" name="id">
+                    <input type="hidden" value="<%=suppName%>" name="name">
+                    <input type="hidden" value="<%=item%>" name="items">
+                </div>
+                <button type="submit" class="btn btn-lg btn-primary btn-block">Proceed</button>
+        </form> 
+    
+    </div>
 
-                <B>Name: </B> <%=x.username%> <br>
-                <B>Contact: </B> <%=x.number%> <br>
-                <B>Address: </B> <%=x.address%> <br>
-                <B>E-mail: </B> <%=x.email%> <br>
-            </div>
-            <%}) %>
-        </div>
-        <% var item=0; %>
-        <div class="row">
-            <div class="well well-lg col-sm-12">
-                <h3><B>Items Sold</B></h3>
-                <%items.forEach(function (x) { %>
-                <% item = item +1; %>
-                <B>Item Name:</B> <%=x.itemname%> <br>
-                 
-                <B>Price per KG:</B> <%=x.price%> <br>
-                <%}) %>
-            </div>
-            </div>
-            <div style="margin-bottom: 1cm;">
-            <% info.forEach(function(x) { %>
+        <footer class="container-fluid text-center">
+        </footer>
 
-            <form id="del" method="post" action="/order/create">
-                <input type="hidden" value="<%=x._id%>" name="id">
-                <input type="hidden" value="<%=x.username%>" name="name">
-                <input type="submit" value="Full Order" class="btn btn-block btn-primary">
-            </form>
-            <br>
-            <form id="del" method="post" action="/order/custom">
-                <input type="hidden" value="<%=x._id%>" name="id">
-                <input type="hidden" value="<%=x.username%>" name="name">
-                <input type="hidden" value="<%=item%>" name="items">
-                <input type="submit" value="Custom Order" class="btn btn-block btn-success">
-            </form>
-            <%})%>
-        </div>
-        </div>
+        <script>
+            $(document).ready(function () {
+                // Add smooth scrolling to all links in navbar + footer link
+                $(".navbar a, footer a[href='#myPage']").on('click', function (event) {
+                    // Make sure this.hash has a value before overriding default behavior
+                    if (this.hash !== "") {
+                        // Prevent default anchor click behavior
+                        event.preventDefault();
 
-    <script>
-        $(document).ready(function () {
-            // Add smooth scrolling to all links in navbar + footer link
-            $(".navbar a, footer a[href='#myPage']").on('click', function (event) {
-                // Make sure this.hash has a value before overriding default behavior
-                if (this.hash !== "") {
-                    // Prevent default anchor click behavior
-                    event.preventDefault();
+                        // Store hash
+                        var hash = this.hash;
 
-                    // Store hash
-                    var hash = this.hash;
+                        // Using jQuery's animate() method to add smooth page scroll
+                        // The optional number (900) specifies the number of milliseconds it takes to scroll to the specified area
+                        $('html, body').animate({
+                            scrollTop: $(hash).offset().top
+                        }, 900, function () {
 
-                    // Using jQuery's animate() method to add smooth page scroll
-                    // The optional number (900) specifies the number of milliseconds it takes to scroll to the specified area
-                    $('html, body').animate({
-                        scrollTop: $(hash).offset().top
-                    }, 900, function () {
-
-                        // Add hash (#) to URL when done scrolling (default click behavior)
-                        window.location.hash = hash;
-                    });
-                } // End if
-            });
-
-            $(window).scroll(function () {
-                $(".slideanim").each(function () {
-                    var pos = $(this).offset().top;
-
-                    var winTop = $(window).scrollTop();
-                    if (pos < winTop + 600) {
-                        $(this).addClass("slide");
-                    }
+                            // Add hash (#) to URL when done scrolling (default click behavior)
+                            window.location.hash = hash;
+                        });
+                    } // End if
                 });
-            });
-        });
-    </script>
+
+                $(window).scroll(function () {
+                    $(".slideanim").each(function () {
+                        var pos = $(this).offset().top;
+
+                        var winTop = $(window).scrollTop();
+                        if (pos < winTop + 600) {
+                            $(this).addClass("slide");
+                        }
+                    });
+                });
+            })
+        </script>
+
 
 </body>
 
 </html>
+
