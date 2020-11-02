@@ -1,1 +1,2 @@
 # SupplyMe
+A Supply chain management system built with expressJS and EJS. The two entities are the suppliers and the store owners. The Store owner can place order which is then processed by the suppliers. Both entities are on different servers. I used axios for cross server communication. Both parties communicate through api calls made with axios. MongoDB is used as a noSQL database server for this.
